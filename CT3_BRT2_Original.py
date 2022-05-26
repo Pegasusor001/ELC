@@ -4,7 +4,6 @@
 import datetime
 import pathlib
 from statistics import mean
-from tempfile import tempdir
 import numpy as np
 import pandas as pd
 from openpyxl import load_workbook
@@ -25,7 +24,7 @@ report = 'reportct3_SCN*'
 def CT3():
     base_path = pathlib.Path(path)
     num_spreadsheets = len(list(base_path.glob(file)))
-    for i in range(1):
+    for i in range(num_spreadsheets):
         file_name = 'M2LP32C04U 5833129 SCN 1.'+str(i+1)+' 11 MAY.xlsx'
 
         for j in range(5):
@@ -99,26 +98,24 @@ def CT3():
 
             #make temp report files
             wb.save(path + file_name + f'report_ct3_{j+1}.xlsx')
-        
-        temp = []
-        # write/consolidate reports
-        report_path = (path + f'reportct3_SCN1.{i+1}.xlsx')
-        # Changes Here
-        writer = pd.ExcelWriter(report_path)
-        for j in range (5):     
-            x = pd.read_excel(path + file_name +f'report_ct3_{j+1}.xlsx')
-            x.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=2*j, index= None)
-            temp.append(x)
+
+
+        # collect reports TODO LINK TO j loop
+        x1 = pd.read_excel(path + file_name +'report_ct3_1.xlsx')
+        x2 = pd.read_excel(path + file_name +'report_ct3_2.xlsx')
+        x3 = pd.read_excel(path + file_name +'report_ct3_3.xlsx')
+        x4 = pd.read_excel(path + file_name +'report_ct3_4.xlsx')
+        x5 = pd.read_excel(path + file_name +'report_ct3_5.xlsx')
 
         #manipulations for final report TODO create array based on size of j loop
-        mod_array = temp[0].values[4][1], temp[1].values[4][1], temp[2].values[4][1], temp[3].values[4][1], temp[4].values[4][1]
+        mod_array = x1.values[4][1], x2.values[4][1], x3.values[4][1], x4.values[4][1], x5.values[4][1]
         min_mod = min(mod_array)
         max_mod = max(mod_array)
         range_mod = max_mod - min_mod
         mean_mod = mean(mod_array)
         x6 = (min_mod, max_mod, mean_mod, range_mod)
 
-        adh_array = temp[0].values[5][1], temp[1].values[5][1], temp[2].values[5][1], temp[3].values[5][1], temp[4].values[5][1]
+        adh_array = x1.values[5][1], x2.values[5][1], x3.values[5][1], x4.values[5][1], x5.values[5][1]
         min_adh = min(adh_array)
         max_adh = max(adh_array)
         mean_adh = mean(adh_array)
@@ -129,6 +126,15 @@ def CT3():
         label = pd.DataFrame({label})
         data = pd.DataFrame({x6, x7})
 
+        # write/consolidate reports
+        report_path = (path + f'reportct3_SCN1.{i+1}.xlsx')
+        # Changes Here
+        writer = pd.ExcelWriter(report_path)
+        x1.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=0, index= None)
+        x2.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=2, index= None)
+        x3.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=4, index= None)
+        x4.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=6, index= None)
+        x5.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=8, index= None)
         label.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=10, startrow= 4, index= None, header= None )
         data.to_excel(writer, sheet_name = 'SCN 1.'+str(i+1), startcol=10, startrow= 5, index= None, header= None )
         writer.save()
@@ -169,5 +175,4 @@ def CT3():
     return
 
 
-# CT3 = CT3()
-CT3()
+CT3 = CT3()
