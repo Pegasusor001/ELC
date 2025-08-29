@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 import os
 
 # 图片文件夹路径
-image_folder = r'F:\WorkPlace\ELC\Wear_Image_Analysis_2025.8.19\Photo\92A CLR001R92 20X Smack'
+image_folder = r'F:\WorkPlace\ELC\Wear_Image_Analysis_2025.8.19\Photo'
 
 # 输出直方图文件夹
-hist_folder = os.path.join(image_folder, 'histograms_HSV_Brightness')
-os.makedirs(hist_folder, exist_ok=True)
+# hist_folder = os.path.join(image_folder, 'histograms_HSV_Brightness')
+# os.makedirs(hist_folder, exist_ok=True)
 
 data_list = []
 
@@ -30,13 +30,13 @@ for filename in os.listdir(image_folder):
         hist, bins = np.histogram(non_black_pixels, bins=256, range=(0,256))
 
         # 保存直方图图像
-        plt.figure()
-        plt.title(f'HSV Brightness Histogram (No Black) - {filename}')
-        plt.xlabel('Brightness (V)')
-        plt.ylabel('Pixel Count')
-        plt.bar(range(256), hist, color='gray')
-        plt.savefig(os.path.join(hist_folder, f'{filename}_hist.png'))
-        plt.close()
+        # plt.figure()
+        # plt.title(f'HSV Brightness Histogram (No Black) - {filename}')
+        # plt.xlabel('Brightness (V)')
+        # plt.ylabel('Pixel Count')
+        # plt.bar(range(256), hist, color='gray')
+        # plt.savefig(os.path.join(hist_folder, f'{filename}_hist.png'))
+        # plt.close()
 
         # 保存到表格
         data_list.append([filename] + hist.tolist())
@@ -44,6 +44,9 @@ for filename in os.listdir(image_folder):
 # 导出 CSV
 columns = ['filename'] + [f'brightness_{i}' for i in range(256)]
 df = pd.DataFrame(data_list, columns=columns)
+
+# 转置表格，使每行对应一个亮度值
+df = df.set_index('filename').T
 df.to_csv(os.path.join(image_folder, 'brightness_data_HSV.csv'), index=False)
 
 print("处理完成（HSV Brightness，忽略黑色背景）。")
