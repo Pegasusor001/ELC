@@ -1,0 +1,22 @@
+# ---- Virtual envs at any depth ----
+**/venv/**
+**/.venv/**
+
+# ---- Python artifacts ----
+**/__pycache__/**
+*.py[cod]
+*$py.class
+
+# ---- Compiled/native artifacts (通常不需要进仓库) ----
+*.pyd
+*.pdb
+*.dll
+
+# ---- IDE / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
